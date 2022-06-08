@@ -110,4 +110,3 @@ Játékszövegek ide kerülnek
 
 if _name_ == '_main_':
     play()
-Írás nekik: Zsolt Máté Gulyás
