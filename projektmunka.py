@@ -12,10 +12,42 @@ class Palya():
         for r in range(BOARD_COLS):
             print(f"  ({r+1}) ", end="")
         print("\n")
+        
+        
+        for r in range(BOARD_ROWS):
+            print('|', end="")
+            for c in range(BOARD_COLS):
+                print(f"  {self.board[r][c]}  |", end="")
+            print("\n")
 
-'''
-Pályát majd kiírassuk
-'''
+        print(f"{'-' * 42}\n")
+
+
+    def which_turn(self):
+        players = ['X', 'O']
+        return players[self.turns % 2]
+    
+    def in_bounds(self, r, c):
+        return (r >= 0 and r < BOARD_ROWS and c >= 0 and c < BOARD_COLS)
+    def turn(self, column):
+        for i in range(BOARD_ROWS-1, -1, -1):
+            if self.board[i][column] == ' ':
+                self.board[i][column] = self.which_turn()
+                self.last_move = [i, column]
+
+                self.turns += 1
+                return True
+
+        return False
+
+
+    def which_turn(self):
+        players = ['X', 'O']
+        return players[self.turns % 2]
+    
+    def in_bounds(self, r, c):
+        return (r >= 0 and r < BOARD_ROWS and c >= 0 and c < BOARD_COLS)
+
 
     def turn(self, column):
         for i in range(BOARD_ROWS-1, -1, -1):
@@ -71,10 +103,34 @@ Pályát majd kiírassuk
 
 def play():
     jatek = Palya()
+    
+    game_over = False
+    while not game_over:
+        jatek.print_board()
 
-'''
-Játékszövegek ide kerülnek
-'''
+        '''
+        Megkérjük a játékost hogy írjon be egy számot
+        Ha a szám nem jó (Például 7 fölötti) akkor újra kér egy számot 
+        '''
+        valid_move = False
+        while not valid_move:
+            user_move = input(f"{jatek.which_turn()} Jön - kérlek válassz egy oszlopot (1-{BOARD_COLS}) között: ")
+            try:
+                valid_move = jatek.turn(int(user_move)-1)
+            except:
+                print(f"Kérlek válassz 1 számot 1 és {BOARD_COLS} között")
+
+        '''
+        Leállítsa az egész játékot ha van egy nyertes
+        '''
+        game_over = jatek.check_winner()
+        
+        '''
+        Leállítsa a játékot ha az eredmény döntetlen 
+        '''
+        if not any(' ' in x for x in jatek.board):
+            print("A végeredmény egyenlő lett")
+            return
 
 if __name__ == '__main__':
     play()
